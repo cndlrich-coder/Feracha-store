@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feracha Store | متجر فراشة</title>
 
+    <!-- خط Cairo الاحترافي -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <link rel="stylesheet" href="style.css">
     
+    <!-- هيكل البيانات للذكاء الاصطناعي (Schema.org) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org/",
@@ -22,10 +27,12 @@
 </head>
 <body>
 
+    <!-- الشريط العلوي -->
     <div class="top-bar">
         <span><i class="fa-solid fa-truck-fast"></i> التوصيل سريع والدفع عند الاستلام</span>
     </div>
 
+    <!-- الهيدر -->
     <header>
         <div class="logo">
             <i class="fa-solid fa-store"></i> Feracha Store
@@ -33,6 +40,7 @@
         <p>تسوق أفضل المنتجات بكل سهولة وبأعلى جودة</p>
     </header>
 
+    <!-- شريط المميزات -->
     <section class="features-bar">
         <div class="feature-item">
             <i class="fa-solid fa-shield-halved"></i>
@@ -57,10 +65,11 @@
         </div>
     </section>
 
+    <!-- قسم المنتجات -->
     <main class="container">
         <h2 class="section-title">أحدث المنتجات</h2>
         <section class="products-grid" id="products-container">
-            <!-- تحميل المنتجات عبر JavaScript -->
+            <p style="text-align: center; grid-column: 1/-1; color: #64748b;">جاري تحميل المنتجات...</p>
         </section>
 
         <!-- نافذة استمارة الطلب (Modal) -->
@@ -68,6 +77,7 @@
             <div class="modal-content">
                 <span class="close-btn" onclick="closeOrderForm()">&times;</span>
                 
+                <!-- استمارة إرسال الطلب -->
                 <div id="form-container">
                     <div class="modal-header">
                         <i class="fa-solid fa-bag-shopping store-icon"></i>
@@ -76,6 +86,7 @@
                     <div id="modal-product-summary" class="product-summary"></div>
                     
                     <form id="direct-order-form" onsubmit="submitOrder(event)">
+                        <!-- حقول مخفية تُرسل للإيميل -->
                         <input type="hidden" name="المنتج" id="selected-product">
                         <input type="hidden" name="سعر القطعة" id="selected-price">
                         <input type="hidden" name="المجموع الإجمالي" id="total-price">
@@ -106,6 +117,7 @@
                     </form>
                 </div>
 
+                <!-- رسالة التأكيد بعد الإرسال -->
                 <div id="success-message" style="display: none; text-align: center; padding: 20px 10px;">
                     <i class="fa-solid fa-circle-check" style="font-size: 55px; color: #10b981; margin-bottom: 15px;"></i>
                     <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">تم إرسال طلبك بنجاح!</h3>
@@ -117,6 +129,7 @@
         </div>
     </main>
 
+    <!-- الفوتر المحسّن -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
@@ -148,73 +161,51 @@
     <script>
         const FORMSPREE_URL = "https://formspree.io/f/mqpkrgod"; 
         const CURRENCY = "درهم";
+        
+        // ضعي رابط CSV من Google Sheets هنا بين التنصيص
+        const GOOGLE_SHEET_CSV_URL = "ضع_رابط_CSV_هنا";
 
-        // قائمة المنتجات المعروضة (7 منتجات مع خاصية stock لحديد المخزون)
-        const products = [
-            {
-                id: 1,
-                title: "ساعة ذكية رياضية Smart Watch",
-                price: 199,
-                stock: 5, // كمية متوفرة
-                description: "ساعة ذكية لمتابعة النشاط الرياضي، ضربات القلب، والتنبيهات.",
-                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80"
-            },
-            {
-                id: 2,
-                title: "سماعات لاسلكية بلوتوث Premium",
-                price: 299,
-                stock: 3, // كمية قليلة
-                description: "سماعات بعزل صوت ممتاز وبطارية تدوم طويلاً مع علبة شحن.",
-                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80"
-            },
-            {
-                id: 3,
-                title: "حقيبة ظهر مقاومة للماء",
-                price: 249,
-                stock: 0, // منتهي الصلاحية (أنتهت الكمية)
-                description: "حقيبة أنيقة للعمل والسفر تحتوي على مخرج شاحن USB.",
-                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80"
-            },
-            {
-                id: 4,
-                title: "نظارات شمسية عصرية كلاسيك",
-                price: 150,
-                stock: 8,
-                description: "حماية كاملة من الأشعة فوق البنفسجية UV400 مع تصميم أنيق.",
-                image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop&q=80"
-            },
-            {
-                id: 5,
-                title: "مكواة بخار محمولة للسفر",
-                price: 180,
-                stock: 2,
-                description: "مكواة خفيفة السعر وسريعة التسخين مثالية للملابس أثناء الرحلات.",
-                image: "https://images.unsplash.com/photo-1584697964400-2af6a2f6204c?w=600&auto=format&fit=crop&q=80"
-            },
-            {
-                id: 6,
-                title: "قاعدة شحن لاسلكي 3 في 1",
-                price: 220,
-                stock: 0, // منتهي الصلاحية (أنتهت الكمية)
-                description: "منصة شحن سريعة للهاتف والساعة والسماعات في نفس الوقت.",
-                image: "https://images.unsplash.com/photo-1622445268465-84024680922c?w=600&auto=format&fit=crop&q=80"
-            },
-            {
-                id: 7,
-                title: "مصباح مكتب ذكي LED",
-                price: 130,
-                stock: 12,
-                description: "إضاءة مريحة للعين مع إمكانية التحكم في درجات الإضاءة والسطوع.",
-                image: "https://images.unsplash.com/photo-1534073828943-f801091bb18c?w=600&auto=format&fit=crop&q=80"
+        let products = [];
+        let maxStockAvailable = 1;
+
+        // دالة لجلب المنتجات من Google Sheets تلقائياً
+        async function loadProductsFromSheet() {
+            try {
+                const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                const data = await response.text();
+                
+                const rows = data.split('\n').slice(1);
+                products = rows.map(row => {
+                    const cols = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+                    if (cols.length >= 6) {
+                        return {
+                            id: cols[0].trim(),
+                            title: cols[1].replace(/"/g, '').trim(),
+                            price: parseFloat(cols[2]) || 0,
+                            stock: parseInt(cols[3]) || 0,
+                            description: cols[4].replace(/"/g, '').trim(),
+                            image: cols[5].replace(/"/g, '').trim()
+                        };
+                    }
+                }).filter(Boolean);
+
+                renderProducts();
+            } catch (error) {
+                console.error("خطأ في جلب البيانات:", error);
+                document.getElementById('products-container').innerHTML = "<p style='text-align:center; grid-column:1/-1;'>تأكد من إدراج رابط CSV الصحيح في الكود.</p>";
             }
-        ];
+        }
 
         function renderProducts() {
             const container = document.getElementById('products-container');
+            if (products.length === 0) {
+                container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>لا توجد منتجات حالياً.</p>";
+                return;
+            }
+
             container.innerHTML = products.map(p => {
                 const isOutOfStock = p.stock <= 0;
                 
-                // تحديد شكل شريط المخزون
                 let stockBadge = '';
                 if (isOutOfStock) {
                     stockBadge = `<div class="stock-tag out-of-stock"><i class="fa-solid fa-circle-xmark"></i> إنتهت الكمية</div>`;
@@ -233,13 +224,10 @@
                         <div class="card-details">
                             <h3>${p.title}</h3>
                             <p class="desc">${p.description}</p>
-                            
                             ${stockBadge}
-
                             <div class="price-row">
                                 <span class="price">${p.price} <small>${CURRENCY}</small></span>
                             </div>
-                            
                             <button class="btn-buy ${isOutOfStock ? 'btn-disabled' : ''}" 
                                     ${isOutOfStock ? 'disabled' : ''} 
                                     onclick="openOrderForm('${p.title}', ${p.price}, ${p.stock})">
@@ -252,8 +240,6 @@
             }).join('');
         }
 
-        let maxStockAvailable = 1;
-
         function openOrderForm(title, price, stock) {
             maxStockAvailable = stock;
             document.getElementById('selected-product').value = title;
@@ -261,7 +247,7 @@
             
             const qtyInput = document.getElementById('quantity');
             qtyInput.value = 1;
-            qtyInput.max = stock; // تقييد الحقل بالمخزون المتبقي
+            qtyInput.max = stock;
 
             updateTotal();
 
@@ -332,7 +318,7 @@
             }
         }
 
-        renderProducts();
+        loadProductsFromSheet();
     </script>
 </body>
 </html>

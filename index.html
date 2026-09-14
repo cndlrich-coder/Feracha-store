@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feracha Store | متجر فراشة</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- بيانات هيكلية منظمة للذكاء الاصطناعي (Structured Data / Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Store",
+      "name": "Feracha Store",
+      "description": "متجر إلكتروني لبيع المنتجات المتنوعة مع توصيل مباشر واستلام الطلبات عبر الواتساب",
+      "currenciesAccepted": "MAD",
+      "paymentAccepted": "Cash on Delivery"
+    }
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Feracha Store 🛍️</div>
+        <p>تسوق أفضل المنتجات مع خدمة التوصيل والدفع عند الاستلام</p>
+    </header>
+
+    <main class="container">
+        <!-- قسم المنتجات -->
+        <section class="products-grid" id="products-container">
+            <!-- سيتم تحميل المنتجات هنا تلقائياً -->
+        </section>
+
+        <!-- نافذة استمارة الطلب (Modal) -->
+        <div id="order-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeOrderForm()">&times;</span>
+                <h3>إكمال الطلب</h3>
+                <p id="modal-product-title" class="product-summary"></p>
+                
+                <form id="whatsapp-form" onsubmit="sendToWhatsApp(event)">
+                    <input type="hidden" id="selected-product">
+                    <input type="hidden" id="selected-price">
+
+                    <label for="fullname">الاسم الكامل:</label>
+                    <input type="text" id="fullname" required placeholder="أدخل اسمك الكامل">
+
+                    <label for="phone">رقم الهاتف:</label>
+                    <input type="tel" id="phone" required placeholder="06XXXXXXXX">
+
+                    <label for="city">المدينة والعنوان:</label>
+                    <input type="text" id="city" required placeholder="المدينة، الحي، اسم الشارع...">
+
+                    <label for="quantity">الكمية:</label>
+                    <input type="number" id="quantity" value="1" min="1" required>
+
+                    <button type="submit" class="btn-submit">تأكيد الطلب عبر الواتساب 💬</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>جميع الحقوق محفوظة © Feracha Store 2026</p>
+    </footer>
+
+    <script>
+        // ضع رقم الهاتف الخاص بك هنا مع الرمز الدولي (مثال المغرب: 2126XXXXXXXX)
+        const MY_PHONE_NUMBER = "212600000000"; 
+        const CURRENCY = "درهم";
+
+        // قائمة المنتجات (يمكنك تعديلها أو إضافتها بسهولة)
+        const products = [
+            {
+                id: 1,
+                title: "منتج نموذج 1",
+                price: 199,
+                description: "وصف مميز للمنتج الأول يوضح الجودة والمواصفات.",
+                image: "https://via.placeholder.com/300x200?text=Product+1"
+            },
+            {
+                id: 2,
+                title: "منتج نموذج 2",
+                price: 299,
+                description: "وصف مميز للمنتج الثاني مع توضيح الفوائد والاستخدام.",
+                image: "https://via.placeholder.com/300x200?text=Product+2"
+            }
+        ];
+
+        // عرض المنتجات في الصفحة
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <img src="${p.image}" alt="${p.title}">
+                    <h3>${p.title}</h3>
+                    <p class="price">${p.price} ${CURRENCY}</p>
+                    <p class="desc">${p.description}</p>
+                    <button class="btn-buy" onclick="openOrderForm('${p.title}', ${p.price})">طلب الآن 🛒</button>
+                </div>
+            `).join('');
+        }
+
+        function openOrderForm(title, price) {
+            document.getElementById('selected-product').value = title;
+            document.getElementById('selected-price').value = price;
+            document.getElementById('modal-product-title').innerText = `المنتج: ${title} (${price} ${CURRENCY})`;
+            document.getElementById('order-modal').style.display = 'block';
+        }
+
+        function closeOrderForm() {
+            document.getElementById('order-modal').style.display = 'none';
+        }
+
+        function sendToWhatsApp(event) {
+            event.preventDefault();
+            const product = document.getElementById('selected-product').value;
+            const price = document.getElementById('selected-price').value;
+            const name = document.getElementById('fullname').value;
+            const phone = document.getElementById('phone').value;
+            const city = document.getElementById('city').value;
+            const qty = document.getElementById('quantity').value;
+            const total = price * qty;
+
+            const message = `السلام عليكم، أرغب في تأكيد الطلب التالي:\n\n` +
+                            `📦 *المنتج:* ${product}\n` +
+                            `🔢 *الكمية:* ${qty}\n` +
+                            `💰 *المجموع:* ${total} ${CURRENCY}\n\n` +
+                            `👤 *الاسم:* ${name}\n` +
+                            `📱 *الهاتف:* ${phone}\n` +
+                            `📍 *العنوان والمدينة:* ${city}`;
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${MY_PHONE_NUMBER}?text=${encodedMessage}`, '_blank');
+            closeOrderForm();
+        }
+
+        // تشغيل الدالة عند تحميل الصفحة
+        renderProducts();
+    </script>
+</body>
+</html>

@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feracha Store | متجر فراشة</title>
+    <!-- استدعاء خط Cairo الاحترافي ودعم أيقونات FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     
-    <!-- بيانات هيكلية منظمة للذكاء الاصطناعي (Structured Data / Schema.org) -->
+    <!-- بيانات هيكلية منظمة للذكاء الاصطناعي -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org/",
@@ -20,41 +23,88 @@
 </head>
 <body>
 
+    <!-- الشريط العلوي للإشعار -->
+    <div class="top-bar">
+        <span><i class="fa-solid fa-truck-fast"></i> التوصيل سريع والدفع عند الاستلام</span>
+    </div>
+
+    <!-- الهيدر -->
     <header>
-        <div class="logo">Feracha Store 🛍️</div>
-        <p>تسوق أفضل المنتجات مع خدمة التوصيل والدفع عند الاستلام</p>
+        <div class="logo">
+            <i class="fa-solid fa-store"></i> Feracha Store
+        </div>
+        <p>تسوق أفضل المنتجات بكل سهولة وبأعلى جودة</p>
     </header>
 
+    <!-- شريط مميزات المتجر -->
+    <section class="features-bar">
+        <div class="feature-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h4>جودة مضمونة</h4>
+                <p>منتجات مختارة بعناية</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <i class="fa-solid fa-handshake"></i>
+            <div>
+                <h4>الدفع عند الاستلام</h4>
+                <p>لا تدفع حتى تستلم</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <i class="fa-solid fa-headset"></i>
+            <div>
+                <h4>دعم متواصل</h4>
+                <p>خدمة عملاء على الواتساب</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- المحتوى الرئيسي للمتجر -->
     <main class="container">
-        <!-- قسم المنتجات -->
+        <h2 class="section-title">أحدث المنتجات</h2>
         <section class="products-grid" id="products-container">
-            <!-- سيتم تحميل المنتجات هنا تلقائياً -->
+            <!-- تحميل المنتجات عبر JavaScript -->
         </section>
 
         <!-- نافذة استمارة الطلب (Modal) -->
         <div id="order-modal" class="modal">
             <div class="modal-content">
                 <span class="close-btn" onclick="closeOrderForm()">&times;</span>
-                <h3>إكمال الطلب</h3>
-                <p id="modal-product-title" class="product-summary"></p>
+                <div class="modal-header">
+                    <i class="fa-brands fa-whatsapp whatsapp-icon"></i>
+                    <h3>إكمال الطلب المباشر</h3>
+                </div>
+                <div id="modal-product-summary" class="product-summary"></div>
                 
                 <form id="whatsapp-form" onsubmit="sendToWhatsApp(event)">
                     <input type="hidden" id="selected-product">
                     <input type="hidden" id="selected-price">
 
-                    <label for="fullname">الاسم الكامل:</label>
-                    <input type="text" id="fullname" required placeholder="أدخل اسمك الكامل">
+                    <div class="input-group">
+                        <label for="fullname"><i class="fa-solid fa-user"></i> الاسم الكامل:</label>
+                        <input type="text" id="fullname" required placeholder="مثال: حسن محمد">
+                    </div>
 
-                    <label for="phone">رقم الهاتف:</label>
-                    <input type="tel" id="phone" required placeholder="06XXXXXXXX">
+                    <div class="input-group">
+                        <label for="phone"><i class="fa-solid fa-phone"></i> رقم الهاتف:</label>
+                        <input type="tel" id="phone" required placeholder="06XXXXXXXX">
+                    </div>
 
-                    <label for="city">المدينة والعنوان:</label>
-                    <input type="text" id="city" required placeholder="المدينة، الحي، اسم الشارع...">
+                    <div class="input-group">
+                        <label for="city"><i class="fa-solid fa-location-dot"></i> المدينة والعنوان:</label>
+                        <input type="text" id="city" required placeholder="مثال: الدار البيضاء، شارع...">
+                    </div>
 
-                    <label for="quantity">الكمية:</label>
-                    <input type="number" id="quantity" value="1" min="1" required>
+                    <div class="input-group">
+                        <label for="quantity"><i class="fa-solid fa-cubes"></i> الكمية:</label>
+                        <input type="number" id="quantity" value="1" min="1" required>
+                    </div>
 
-                    <button type="submit" class="btn-submit">تأكيد الطلب عبر الواتساب 💬</button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-brands fa-whatsapp"></i> تأكيد الطلب عبر الواتساب
+                    </button>
                 </form>
             </div>
         </div>
@@ -65,38 +115,44 @@
     </footer>
 
     <script>
-        // ضع رقم الهاتف الخاص بك هنا مع الرمز الدولي (مثال المغرب: 2126XXXXXXXX)
-        const MY_PHONE_NUMBER = "212616126645"; 
+        const MY_PHONE_NUMBER = "212600000000"; // ضع رقمك هنا مفضلاً مع كود الدولة
         const CURRENCY = "درهم";
 
-        // قائمة المنتجات (يمكنك تعديلها أو إضافتها بسهولة)
         const products = [
             {
                 id: 1,
-                title: "منتج نموذج 1",
+                title: "منتج أنيق نموذج 1",
                 price: 199,
-                description: "وصف مميز للمنتج الأول يوضح الجودة والمواصفات.",
-                image: "https://via.placeholder.com/300x200?text=Product+1"
+                description: "وصف مميز يوضح خامات المنتج وجودته العالية وأسباب اقتنائه.",
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80"
             },
             {
                 id: 2,
-                title: "منتج نموذج 2",
+                title: "منتج مميز نموذج 2",
                 price: 299,
-                description: "وصف مميز للمنتج الثاني مع توضيح الفوائد والاستخدام.",
-                image: "https://via.placeholder.com/300x200?text=Product+2"
+                description: "تصميم عصر ومريح يناسب جميع الاستخدامات اليومية بأعلى المعايير.",
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80"
             }
         ];
 
-        // عرض المنتجات في الصفحة
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = products.map(p => `
                 <div class="product-card">
-                    <img src="${p.image}" alt="${p.title}">
-                    <h3>${p.title}</h3>
-                    <p class="price">${p.price} ${CURRENCY}</p>
-                    <p class="desc">${p.description}</p>
-                    <button class="btn-buy" onclick="openOrderForm('${p.title}', ${p.price})">طلب الآن 🛒</button>
+                    <div class="badge">الأكثر طلباً 🔥</div>
+                    <div class="img-wrapper">
+                        <img src="${p.image}" alt="${p.title}" loading="lazy">
+                    </div>
+                    <div class="card-details">
+                        <h3>${p.title}</h3>
+                        <p class="desc">${p.description}</p>
+                        <div class="price-row">
+                            <span class="price">${p.price} <small>${CURRENCY}</small></span>
+                        </div>
+                        <button class="btn-buy" onclick="openOrderForm('${p.title}', ${p.price})">
+                            <i class="fa-solid fa-cart-shopping"></i> اطلب الآن
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -104,8 +160,11 @@
         function openOrderForm(title, price) {
             document.getElementById('selected-product').value = title;
             document.getElementById('selected-price').value = price;
-            document.getElementById('modal-product-title').innerText = `المنتج: ${title} (${price} ${CURRENCY})`;
-            document.getElementById('order-modal').style.display = 'block';
+            document.getElementById('modal-product-summary').innerHTML = `
+                <span><strong>المنتج المطلوبة:</strong> ${title}</span><br>
+                <span><strong>السعر:</strong> ${price} ${CURRENCY}</span>
+            `;
+            document.getElementById('order-modal').style.display = 'flex';
         }
 
         function closeOrderForm() {
@@ -122,7 +181,7 @@
             const qty = document.getElementById('quantity').value;
             const total = price * qty;
 
-            const message = `السلام عليكم، أرغب في تأكيد الطلب التالي:\n\n` +
+            const message = `مرحباً Feracha Store 👋\nأرغب في تأكيد الطلب التالي:\n\n` +
                             `📦 *المنتج:* ${product}\n` +
                             `🔢 *الكمية:* ${qty}\n` +
                             `💰 *المجموع:* ${total} ${CURRENCY}\n\n` +
@@ -135,7 +194,13 @@
             closeOrderForm();
         }
 
-        // تشغيل الدالة عند تحميل الصفحة
+        window.onclick = function(event) {
+            const modal = document.getElementById('order-modal');
+            if (event.target == modal) {
+                closeOrderForm();
+            }
+        }
+
         renderProducts();
     </script>
 </body>

@@ -8,18 +8,18 @@
     <!-- خط Cairo الاحترافي -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- مكتبة الأيقونات FontAwesome المحدثة -->
+    <!-- مكتبة الأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <link rel="stylesheet" href="style.css">
     
-    <!-- هيكل البيانات للذكاء الاصطناعي (Schema.org) -->
+    <!-- هيكل البيانات الموجه للذكاء الاصطناعي (Schema.org) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org/",
       "@type": "Store",
       "name": "Feracha Store",
-      "description": "متجر إلكتروني لبيع المنتجات المتنوعة مع توصيل مباشر واستلام الطلبات عبر الواتساب",
+      "description": "متجر إلكتروني لبيع المنتجات المتنوعة مع توصيل مباشر واستلام الطلبات عبر الموقع",
       "currenciesAccepted": "MAD",
       "paymentAccepted": "Cash on Delivery"
     }
@@ -60,7 +60,7 @@
             <i class="fa-solid fa-headset"></i>
             <div>
                 <h4>دعم متواصل</h4>
-                <p>خدمة عملاء على الواتساب</p>
+                <p>خدمة عملاء سريعة</p>
             </div>
         </div>
     </section>
@@ -69,47 +69,62 @@
     <main class="container">
         <h2 class="section-title">أحدث المنتجات</h2>
         <section class="products-grid" id="products-container">
-            <!-- سيتم تحميل المنتجات عبر JavaScript -->
+            <!-- تحميل المنتجات عبر JavaScript -->
         </section>
 
         <!-- نافذة استمارة الطلب (Modal) -->
         <div id="order-modal" class="modal">
             <div class="modal-content">
                 <span class="close-btn" onclick="closeOrderForm()">&times;</span>
-                <div class="modal-header">
-                    <i class="fa-brands fa-whatsapp whatsapp-icon"></i>
-                    <h3>إكمال الطلب المباشر</h3>
-                </div>
-                <div id="modal-product-summary" class="product-summary"></div>
                 
-                <form id="whatsapp-form" onsubmit="sendToWhatsApp(event)">
-                    <input type="hidden" id="selected-product">
-                    <input type="hidden" id="selected-price">
-
-                    <div class="input-group">
-                        <label for="fullname"><i class="fa-solid fa-user"></i> الاسم الكامل:</label>
-                        <input type="text" id="fullname" required placeholder="مثال: حسن محمد">
+                <!-- استمارة إرسال الطلب -->
+                <div id="form-container">
+                    <div class="modal-header">
+                        <i class="fa-solid fa-bag-shopping store-icon"></i>
+                        <h3>إكمال الطلب المباشر</h3>
                     </div>
+                    <div id="modal-product-summary" class="product-summary"></div>
+                    
+                    <form id="direct-order-form" onsubmit="submitOrder(event)">
+                        <!-- حقول مخفية تُرسل للإيميل -->
+                        <input type="hidden" name="المنتج" id="selected-product">
+                        <input type="hidden" name="سعر القطعة" id="selected-price">
+                        <input type="hidden" name="المجموع الإجمالي" id="total-price">
 
-                    <div class="input-group">
-                        <label for="phone"><i class="fa-solid fa-phone"></i> رقم الهاتف:</label>
-                        <input type="tel" id="phone" required placeholder="06XXXXXXXX">
-                    </div>
+                        <div class="input-group">
+                            <label for="fullname"><i class="fa-solid fa-user"></i> الاسم الكامل:</label>
+                            <input type="text" name="اسم الزبون" id="fullname" required placeholder="مثال: حسن محمد">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="city"><i class="fa-solid fa-location-dot"></i> المدينة والعنوان:</label>
-                        <input type="text" id="city" required placeholder="مثال: الدار البيضاء، شارع...">
-                    </div>
+                        <div class="input-group">
+                            <label for="phone"><i class="fa-solid fa-phone"></i> رقم الهاتف:</label>
+                            <input type="tel" name="رقم الهاتف" id="phone" required placeholder="06XXXXXXXX">
+                        </div>
 
-                    <div class="input-group">
-                        <label for="quantity"><i class="fa-solid fa-cubes"></i> الكمية:</label>
-                        <input type="number" id="quantity" value="1" min="1" required>
-                    </div>
+                        <div class="input-group">
+                            <label for="city"><i class="fa-solid fa-location-dot"></i> المدينة والعنوان:</label>
+                            <input type="text" name="العنوان والمدينة" id="city" required placeholder="مثال: الدار البيضاء، شارع...">
+                        </div>
 
-                    <button type="submit" class="btn-submit">
-                        <i class="fa-brands fa-whatsapp"></i> تأكيد الطلب عبر الواتساب
-                    </button>
-                </form>
+                        <div class="input-group">
+                            <label for="quantity"><i class="fa-solid fa-cubes"></i> الكمية:</label>
+                            <input type="number" name="الكمية" id="quantity" value="1" min="1" required onchange="updateTotal()">
+                        </div>
+
+                        <button type="submit" id="btn-submit" class="btn-submit">
+                            <i class="fa-solid fa-check-circle"></i> تأكيد الطلب الآن
+                        </button>
+                    </form>
+                </div>
+
+                <!-- رسالة التأكيد بعد الإرسال -->
+                <div id="success-message" style="display: none; text-align: center; padding: 20px 10px;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 55px; color: #10b981; margin-bottom: 15px;"></i>
+                    <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">تم إرسال طلبك بنجاح!</h3>
+                    <p style="color: #64748b; font-size: 14px; line-height: 1.6;">شكراً لتسوقك معنا. سيتصل بك فريقنا قريباً لتأكيد معلومات التوصيل.</p>
+                    <button onclick="closeOrderForm()" class="btn-submit" style="margin-top: 20px; background-color: #2563eb;">متابعة التسوق</button>
+                </div>
+
             </div>
         </div>
     </main>
@@ -119,8 +134,8 @@
     </footer>
 
     <script>
-        // ضع رقمك على الواتساب هنا شامل رمز الدولة (مثال المغرب: 2126XXXXXXXX)
-        const MY_PHONE_NUMBER = "212616126645"; 
+        // رابط Formspree الخاص بك
+        const FORMSPREE_URL = "https://formspree.io/f/mqpkrgod"; 
         const CURRENCY = "درهم";
 
         const products = [
@@ -165,38 +180,59 @@
         function openOrderForm(title, price) {
             document.getElementById('selected-product').value = title;
             document.getElementById('selected-price').value = price;
-            document.getElementById('modal-product-summary').innerHTML = `
-                <span><strong>المنتج المطلوبة:</strong> ${title}</span><br>
-                <span><strong>السعر:</strong> ${price} ${CURRENCY}</span>
-            `;
+            document.getElementById('quantity').value = 1;
+            updateTotal();
+
+            document.getElementById('form-container').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
             document.getElementById('order-modal').style.display = 'flex';
+        }
+
+        function updateTotal() {
+            const price = parseFloat(document.getElementById('selected-price').value);
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            const title = document.getElementById('selected-product').value;
+            const total = price * qty;
+            
+            document.getElementById('total-price').value = `${total} ${CURRENCY}`;
+            document.getElementById('modal-product-summary').innerHTML = `
+                <span><strong>المنتج:</strong> ${title}</span><br>
+                <span><strong>المجموع:</strong> ${total} ${CURRENCY}</span>
+            `;
         }
 
         function closeOrderForm() {
             document.getElementById('order-modal').style.display = 'none';
         }
 
-        function sendToWhatsApp(event) {
+        async function submitOrder(event) {
             event.preventDefault();
-            const product = document.getElementById('selected-product').value;
-            const price = document.getElementById('selected-price').value;
-            const name = document.getElementById('fullname').value;
-            const phone = document.getElementById('phone').value;
-            const city = document.getElementById('city').value;
-            const qty = document.getElementById('quantity').value;
-            const total = price * qty;
+            const submitBtn = document.getElementById('btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
 
-            const message = `مرحباً Feracha Store 👋\nأرغب في تأكيد الطلب التالي:\n\n` +
-                            `📦 *المنتج:* ${product}\n` +
-                            `🔢 *الكمية:* ${qty}\n` +
-                            `💰 *المجموع:* ${total} ${CURRENCY}\n\n` +
-                            `👤 *الاسم:* ${name}\n` +
-                            `📱 *الهاتف:* ${phone}\n` +
-                            `📍 *العنوان والمدينة:* ${city}`;
+            const formData = new FormData(event.target);
 
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/${MY_PHONE_NUMBER}?text=${encodedMessage}`, '_blank');
-            closeOrderForm();
+            try {
+                const response = await fetch(FORMSPREE_URL, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    document.getElementById('form-container').style.display = 'none';
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('direct-order-form').reset();
+                } else {
+                    alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
+                }
+            } catch (error) {
+                alert('يرجى التأكد من الاتصال بالإنترنت والمحاولة مجدداً.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-check-circle"></i> تأكيد الطلب الآن';
+            }
         }
 
         window.onclick = function(event) {
